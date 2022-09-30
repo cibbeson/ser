@@ -2,24 +2,25 @@ import json
 import torch
 import datetime
 import os
+import git
 
 
-def track_run(name, epochs, batch_size, learning_rate, model, save_val_acc):
+def track_run(p, model, save_val_acc):
 
     now = datetime.datetime.now()
 
     time_now = now.strftime("%Y:%m:%d_%H:%M")
 
-    if os.path.exists(f'experiments/{name}') == False:
-        os.mkdir(f'experiments/{name}')
+    if os.path.exists(f'experiments/{p.name}') == False:
+        os.mkdir(f'experiments/{p.name}')
 
-    torch.save(model.state_dict(), f"experiments/{name}/{time_now}.pth")
+    torch.save(model.state_dict(), f"experiments/{p.name}/{time_now}.pth")
 
     hyperparameters = {
-        "name": name,
-        "epochs": epochs,
-        "batch_size": batch_size,
-        "learning_rate": learning_rate
+        "name": p.name,
+        "epochs": p.epochs,
+        "batch_size": p.batch_size,
+        "learning_rate": p.learning_rate
     }
 
     
@@ -33,9 +34,14 @@ def track_run(name, epochs, batch_size, learning_rate, model, save_val_acc):
         }
 
     val_loss_list = {'validation accuracies': save_val_acc}
+
+    
+    repo = git.Repo(search_parent_directories=True)
+    sha = repo.head.object.hexsha
+    git_hash = {"Current git commit hash": sha}
     
 
-    with open(f"experiments/{name}/{time_now}.json", 'w') as f:
+    with open(f"experiments/{p.name}/{time_now}.json", 'w') as f:
         json.dump(hyperparameters, f)
         f.write("\n")
         json.dump(final_val, f)
@@ -43,4 +49,6 @@ def track_run(name, epochs, batch_size, learning_rate, model, save_val_acc):
         json.dump(best_val, f)
         f.write("\n")
         json.dump(save_val_acc, f)
+        f.write("\n")
+        json.dump(git_hash, f)
     

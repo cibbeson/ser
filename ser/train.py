@@ -9,11 +9,11 @@ import os
 import datetime
 
 
-def train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer, name):
+def train_loop(p, training_dataloader, validation_dataloader, device, model, optimizer):
     save_val_acc = []
-    if os.path.exists(f'experiments/temporary_{name}') == False:
-        os.mkdir(f'experiments/temporary_{name}')
-    for epoch in range(epochs):
+    if os.path.exists(f'experiments/temporary_{p.name}') == False:
+        os.mkdir(f'experiments/temporary_{p.name}')
+    for epoch in range(p.epochs):
             for i, (images, labels) in enumerate(training_dataloader):
                 images, labels = images.to(device), labels.to(device)
                 model.train()
@@ -46,7 +46,7 @@ def train_loop(epochs, training_dataloader, validation_dataloader, device, model
                 save_val_acc.append(val_acc)
                 now = datetime.datetime.now()
                 time_now = now.strftime("%Y:%m:%d_%H:%M")
-                torch.save(model.state_dict(), f"experiments/temporary_{name}/{time_now}_epoch_{epoch}.pth")
+                torch.save(model.state_dict(), f"experiments/temporary_{p.name}/{time_now}_epoch_{epoch}.pth")
     return save_val_acc
     
     
