@@ -57,9 +57,9 @@ def train(
     training_dataloader, validation_dataloader = load_data(DATA_DIR, ts, batch_size)
 
     # train
-    train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer)
+    save_val_acc = train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer, name)
 
-    track_run(name, epochs, batch_size, learning_rate, model)
+    track_run(name, epochs, batch_size, learning_rate, model, save_val_acc)
 
 
 @main.command()

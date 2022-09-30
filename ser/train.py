@@ -5,10 +5,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+import os
+import datetime
 
 
-def train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer):
-
+def train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer, name):
+    save_val_acc = []
+    if os.path.exists(f'experiments/temporary_{name}') == False:
+        os.mkdir(f'experiments/temporary_{name}')
     for epoch in range(epochs):
             for i, (images, labels) in enumerate(training_dataloader):
                 images, labels = images.to(device), labels.to(device)
@@ -36,9 +40,13 @@ def train_loop(epochs, training_dataloader, validation_dataloader, device, model
                     correct += pred.eq(labels.view_as(pred)).sum().item() 
                 val_loss /= val_length
                 val_acc = correct / val_length
-
                 print(
                     f"Val Epoch: {epoch} | Avg Loss: {val_loss:.4f} | Accuracy: {val_acc}"
                 )
+                save_val_acc.append(val_acc)
+                now = datetime.datetime.now()
+                time_now = now.strftime("%Y:%m:%d_%H:%M")
+                torch.save(model.state_dict(), f"experiments/temporary_{name}/{time_now}_epoch_{epoch}.pth")
+    return save_val_acc
     
     

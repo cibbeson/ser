@@ -1,0 +1,4 @@
+{"name": "experiment2", "epochs": 1, "batch_size": 6000, "learning_rate": 0.01}
+{"final validation accuracy": 0.9123}
+{"best validation accuracy": 0.9123, "epoch": 0}
+[0.9123]
