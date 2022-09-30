@@ -1,4 +1,5 @@
 import typer
+import inference
 
 main = typer.Typer()
 
@@ -10,4 +11,4 @@ def train():
 
 @main.command()
 def infer():
-    pass
+    inference.inference()
