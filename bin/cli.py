@@ -19,12 +19,21 @@ def train(
     name: str = typer.Option(
         ..., "-n", "--name", help="Name of experiment to save under."
     ),
+    epochs: int = typer.Option(
+        ..., "-e", "--epochs", help="Number of epochs."
+    ),
+    batch_size: int = typer.Option(
+        ..., "-b", "--batch_size", help="Batch size."
+    ),
+    learning_rate: float = typer.Option(
+        ..., "-r", "--learning_rate", help="Learning Rate"
+    )
 ):
     print(f"Running experiment {name}")
+    print(f"{epochs} epochs")
+    print(f"Batch size {batch_size}")
+    print(f"Learning rate {learning_rate}")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    epochs = 2
-    batch_size = 1000
-    learning_rate = 0.01
 
     # save the parameters!
 
