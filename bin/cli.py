@@ -10,6 +10,7 @@ from ser.model import Net
 from ser.train import train_loop
 from ser.data import load_data
 from ser.transforms import transform_data
+from ser.run import track_run
 
 
 import typer
@@ -57,6 +58,8 @@ def train(
 
     # train
     train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer)
+
+    track_run(name, epochs, batch_size, learning_rate, model)
 
 
 @main.command()
