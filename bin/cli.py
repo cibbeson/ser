@@ -6,9 +6,10 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from model import Net
-from train import train_loop
-from data import load_data
+from ser.model import Net
+from ser.train import train_loop
+from ser.data import load_data
+from ser.transforms import transform_data
 
 
 import typer
@@ -49,44 +50,13 @@ def train(
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # torch transforms
-    ts = transforms.Compose(
-        [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
-    )
+    ts = transform_data()
 
     # dataloaders
-    load_data(DATA_DIR, ts, batch_size)
+    training_dataloader, validation_dataloader = load_data(DATA_DIR, ts, batch_size)
 
     # train
-    for epoch in range(epochs):
-        for i, (images, labels) in enumerate(training_dataloader):
-            images, labels = images.to(device), labels.to(device)
-            model.train()
-            optimizer.zero_grad()
-            output = model(images)
-            loss = F.nll_loss(output, labels)
-            loss.backward()
-            optimizer.step()
-            print(
-                f"Train Epoch: {epoch} | Batch: {i}/{len(training_dataloader)} "
-                f"| Loss: {loss.item():.4f}"
-            )
-            # validate
-            val_loss = 0
-            correct = 0
-            with torch.no_grad():
-                for images, labels in validation_dataloader:
-                    images, labels = images.to(device), labels.to(device)
-                    model.eval()
-                    output = model(images)
-                    val_loss += F.nll_loss(output, labels, reduction="sum").item()
-                    pred = output.argmax(dim=1, keepdim=True)
-                    correct += pred.eq(labels.view_as(pred)).sum().item()
-                val_loss /= len(validation_dataloader.dataset)
-                val_acc = correct / len(validation_dataloader.dataset)
-
-                print(
-                    f"Val Epoch: {epoch} | Avg Loss: {val_loss:.4f} | Accuracy: {val_acc}"
-                )
+    train_loop(epochs, training_dataloader, validation_dataloader, device, model, optimizer)
 
 
 @main.command()
