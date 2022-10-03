@@ -4,6 +4,7 @@ from pathlib import Path
 import typer
 import torch
 import git
+import json
 
 from ser.train import train as run_train
 from ser.constants import RESULTS_DIR
@@ -31,3 +32,8 @@ def inference(dataloader, run_path):
     print(generate_ascii_art(pixels))
     print(f"This is a {pred}")
     print(f'with confidence {confidence:.3}')
+
+    params_file = open(run_path / "params.json",)
+    params = json.load(params_file)
+    print(params)
+    params_file.close

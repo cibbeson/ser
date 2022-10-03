@@ -66,7 +66,7 @@ def infer(
     ),
 ):
     
-    
+    run_path = RESULTS_DIR / run_path
 
     # TODO load the parameters from the run_path so we can print them out!
 
