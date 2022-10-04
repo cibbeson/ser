@@ -10,5 +10,5 @@ def test_flip():
     flipped_array = torch.tensor(np.array([[8, 7, 6], [5, 4, 3], [2, 1, 0]]))
     test_output = flip()(small_array)
     
-    #assert test_output == flipped_array
-    assert torch.all(test_output.eq( flipped_array))
+    
+    assert torch.all(test_output.eq(flipped_array))
